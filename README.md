@@ -1,6 +1,7 @@
 # Python Project - Diwali Sales Analysis
 
-<img src="https://github.com/AsadSayed07/Python_Project-Weather_Data_Analysis/blob/main/weather_image.jpg?raw=true" width="1000" height="300">
+<p align="center">
+  <img src="https://github.com/AsadSayed07/Python_Project-Diwali_Sales/blob/main/diwali%20sale.png?raw=true" height = 350 width= 600 >
 
 ## OVERVIEW
 In this project we will work on the "Diwali Sales Dataset" which is a data set containing information about the sales done during the occassion of Diwali based on different factors. It covers an end-to-end process of understanding the dataset, uploading the file on **Jupyter Notebook** and using **Python librarires** like **Pandas**, **Matplotlib** and **Seaborn** for data analysis. The primary goal of this project is to use python libraries and generate valuable insights from the dataset.
