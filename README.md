@@ -11,17 +11,35 @@ In this project we will work on the "Diwali Sales Dataset" which is a data set c
 Before working on the dataset, it is important to understand the data thoroughly. The dataset contains attributes such as:
 - `User id`, `Customer Name`, `Product ID`, `Gender`, `Age Group`, `Age`, `Marital Status`, `State`, `Zone`, `Occupation`, `Product Category`, `Orders`, `Amount`.
 
-### 2. UPLOADING THE CSV FILE
-After seeing the attributes, I uploaded the CSV file to Jupyter Notebook.
+### 2. CLEANING THE DATASET
+After seeing the attributes, the dataset had to be cleaned and organized.
 
-### 3. IMPORTING THE REQUIRED LIBRARIES
+### 3. IMPORTING THE REQUIRED LIBRARIES FOR ANALYSIS
 Imported Python Libraries for the following purpose:
 - **Pandas** - For analyzing the dataset and solving the questions
 - **Matplotlib** & **Seaborn** - For Graphical and Other Visual Representations
 
+## CLEANING THE DATASET
+```vim
+---removing columns "status" and "unanmed" from the data
+df.drop(["Status","unnamed1"], axis=1, inplace=True)
+```
+
+```vim
+---finding total number of null values 
+pd.isnull(df).sum()
+```
+
+```vim
+--removing the null values from the data
+df.dropna(inplace=True)
+```
+
+###
+
 ## THE ANALYSIS IS DONE BASED ON VARIOUS FACTORS <br> *(mentioned in their respective headers)*
 
-**GENDER ANALYSIS**
+## GENDER ANALYSIS
 ```vim
 ---overview of all the columns
 df.columns
@@ -30,7 +48,10 @@ df.columns
 ax = sns.countplot(x = "Gender", data = df)
 for bars in ax.containers:
     ax.bar_label(bars)
+```
+![Gender Count](https://github.com/user-attachments/assets/ea0860b7-3407-463c-9c66-427e0a0fb9d0)
 
+```vim
 ---Finding the amount spent by males and females respectively
 df.groupby(["Gender"], as_index = False) ["Amount"].sum().sort_values(by = "Amount", ascending =False)
 
@@ -38,101 +59,169 @@ df.groupby(["Gender"], as_index = False) ["Amount"].sum().sort_values(by = "Amou
 sales_gen = df.groupby(["Gender"], as_index=False) ["Amount"].sum().sort_values(by = "Amount", ascending = False)
 sns.barplot(x="Gender", y="Amount", data= sales_gen)
 ```
+![Amount by Gender](https://github.com/user-attachments/assets/d842e77c-2c24-439f-8630-01e9764f009a)
 
-Q2. **Find the number of times when the "Weather" is "Exactly Clear"**
-```vim
-#Value Counts
-print("The weather was clear", df["Weather Condition"].value_counts()["Clear"],"times")
+***From the above two graphs we can see that there are more female buyers than male buyers. Also, females have a greater purchasing power.***
 
-#Filtering
-print("The weather was clear",len(df[df["Weather Condition"] == "Clear"]),"times")
 
-#Group by
-print("The Weather was exactly clear",len(df.groupby("Weather").get_group("Clear")),"times")
-```
-Q3. **Find the number of times when the "Wind Speed" was exactly 4 km/hr.**
-```vim
-print("The Wind Speed was 4km/h,", len(df[df["Wind Speed_km/h"]==4]),"times")
-```
-Q4. **Find all the null values in the data.**
-```vim
-print(df.isnull().sum())
-```
-Q5. **Rename the column, "Weather" in the dataframe to "Weather Condition".**
-```vim
-df.rename(columns = {"Weather" : "Weather Condition"}, inplace = True)
-df.head(2)
-```
-Q6. **What is the mean "Visibility"?**
-```vim
-print("The mean value of 'Visibility_km/h' is", df["Visibility_km"].mean().round(2))
-```
-Q7. **What is the standard deviation of "Pressure" in this data?**
-```vim
-print("The standard deviation of 'Pressure' is",df["Press_kPa"].std().round(2))
-```
-Q8. **What is the variance of "Relative Humidity" in this data?**
-```vim
-print("The Variance of 'Relative Humidity' is", df["Rel Hum_%"].var().round(2))
-```
-Q9. **Find all instances when snow was recorded**
-```vim
-#Method 1 : Value Counts
-print("Snow was recorded",df["Weather Condition"].value_counts()["Snow"],"times")
+###
 
-#Method 2: Filtering
-print("Snow was recorded",len(df[df["Weather Condition"]=="Snow"]),"times")
+## AGE GROUP ANALYSIS
+```vim
+---overview of all the columns
+df.columns
 
-#Method 3: Group By
-print("Snow was recorded", len(df.groupby("Weather Condition").get_group("Snow")), "times")
+---creating a bar chart showing the total count of different age groups
+sns.countplot(x="Age Group", data = df)
+```
+![Age Group Count](https://github.com/user-attachments/assets/b0a47768-65f0-442f-a20e-c0d9dfbf476a)
 
-#Method 4 Str.contains
-print("With 'str.contains' method, snow has been recorded",len(df[df["Weather Condition"].str.contains("Snow")]),"times,
-since it considers all the rows where snow is mentioned irrespective of other conditions along with it, for example:
-Freezing drizzle, Snow")
-```
-Q10. **Find all instances when "Wind Speed" is about 24 and "Visibility" is 25.**
 ```vim
-s = len(df[(df["Wind Speed_km/h"] == 24) & (df["Visibility_km"] == 25)])
-print("The above instance has occured", s, "times")
+---creating a bar chart showing the total count of different age groups, gender-wise
+ax = sns.countplot(x = "Age Group", hue = "Gender", data = df)
+for bars in ax.containers:
+    ax.bar_label(bars)
 ```
-Q11. **What is the mean value of each column against each "Weather Condition"?**
-```vim
-s = df.groupby("Weather Condition").mean(numeric_only = True)
-print("Following are the mean values of each column against each 'Weather Condition':","\n")
-s
-```
-Q12. **What is the minimum and maximum value of each column against each "Weather Condition"?**
-```vim
-#Minimum
-a = df.groupby("Weather Condition").min()
-print("Following are the minimum values ofeach column against each weather condition:","\n")
-a
+![Age Group by Gender](https://github.com/user-attachments/assets/8122735d-48c9-4602-af88-ec05a066be20)
 
-#Maximum
-b = df.groupby("Weather Condition").max()
-print("Following are the maximum values ofeach column against each weather condition:","\n")
-b
-```
-Q13. **Show all the record where weather condition is fog.**
 ```vim
-a = df[df["Weather Condition"].str.contains("Fog")]
-print("Below are all the records where weather condition was 'Fog':","\n")
-a
+---creating a bar chart showing the amount spent by different age groups respectively.
+sales_age = df.groupby(["Age Group"], as_index = False) ["Amount"].sum().sort_values(by = "Amount", ascending=False)
+sns.barplot(x = "Age Group", y= "Amount", data = sales_age)
 ```
-Q14. **Find all instances when "Weather is clear" or "Visibility" is above 40**
+![Age Group by Amount](https://github.com/user-attachments/assets/601b73ea-ebe0-444e-841e-c83af887acfe)
+
+***From the above graph we can see that most of the buyers are from the age group 26-35yrs old Females.***
+
+###
+
+## STATE-WISE ANALYSIS
 ```vim
-a = df[(df["Weather Condition"] == "Clear") | (df["Visibility_km"] > 40)]
-print("The following records show all the instances where the weather was clear and visibility was 40:","\n")
-a
+---overview of all the columns
+df.columns
+
+---finding the total number of order from top 10 states
+orders_state = df.groupby(["State"], as_index=False) ["Orders"].sum().sort_values(by = "Orders", ascending = False).head(10)
+sns.set(rc={"figure.figsize":(16,5)})
+sns.barplot(x = "State", y = "Orders", data = orders_state)
 ```
-Q15. **Find all instances when:**<br>
-a) ***"Weather is Clear" and "Relative Humidity is greater than 50"*** <br>
-**OR** <br>
-b) ***"Visibility" is above 40"***
+![Orders by state](https://github.com/user-attachments/assets/f0edbaca-ef84-44b0-9216-30a25b1499f8)
+
 ```vim
-s = df[((df["Weather Condition"] == "Clear") & (df["Rel Hum_%"] > 50)) | (df["Visibility_km"] > 40)]
-print("Below records show the records where Weather condition is clear and Relative Humidity is greater than 50
- or where visibility is greater than 40:","\n")
-s
+---finding the total amount/ sales from the top 10 states
+sales_state = df.groupby(["State"], as_index= False) ["Amount"].sum().sort_values(by="Amount", ascending = False).head(10)
+sns.set(rc={"figure.figsize":(16,5)})
+sns.barplot(x = "State" , y = "Amount", data = sales_state)
 ```
+![Amount by state](https://github.com/user-attachments/assets/5dd9538d-7810-4060-a53d-74322998d1f3)
+
+***From the above graphs we can see that most orders are from Uttar Pradesh, Maharashtra, and Karnataka respectively.***
+
+###
+
+## ANALYSIS BY MARITAL STATUS
+```vim
+---count of people that are married "0" and unmarried "1" respectively.
+ax = sns.countplot(x = "Marital_Status", data = df)
+sns.set(rc = {"figure.figsize":(4,5)})
+for bars in ax.containers:
+    ax.bar_label(bars)
+```
+![Marital Status](https://github.com/user-attachments/assets/45070930-5bf6-4b1b-894e-19987c641de5)
+
+```vim
+---Amount spent by people that are married "0" and unmarried "1" respectively.
+sales_mar = df.groupby(["Marital_Status"], as_index = False) ["Amount"].sum().sort_values(by = "Amount",ascending=False)
+sns.barplot(x = "Marital_Status", y="Amount", data = sales_mar)
+```
+![Marital status by amount](https://github.com/user-attachments/assets/aa1bf62b-d5ab-403c-96d8-a5016fbf7c7e)
+
+```vim
+---Amount spent by people that are married "0" and unmarried "1" respectively based on their gender
+sales_margend = df.groupby(["Marital_Status", "Gender"], as_index=False) ["Amount"].sum().sort_values(by = "Amount", ascending = False)
+sns.barplot(x="Marital_Status", y="Amount", data = sales_margend, hue = "Gender")
+```
+![Marital status by amount and Gender](https://github.com/user-attachments/assets/745a6c72-3b6d-48f9-8060-145135528184)
+
+***From the above graphs we can see that Married Females hold the highest purchasing power.***
+
+###
+
+## OCCUPATION ANALYSIS
+```vim
+---overview of all the columns
+df.columns
+```
+```vim
+---count of people on the basis of their respective occupation.
+ax = sns.countplot(x = "Occupation", data = df)
+sns.set(rc={"figure.figsize":(21,6)})
+for bars in ax.containers:
+    ax.bar_label(bars)
+```
+![count of occupation](https://github.com/user-attachments/assets/a9ddf1f2-bd68-48f0-bbd1-8f4b7a57ffef)
+
+```vim
+---Amount spent by people on the basis of their respective occupation.
+sales_occ = df.groupby(["Occupation"], as_index=False) ["Amount"].sum().sort_values(by = "Amount", ascending = False)
+sns.barplot(x = "Occupation", y = "Amount", data = sales_occ)
+```
+![Amount by occupation](https://github.com/user-attachments/assets/e72f249c-24f9-4792-b3d5-f50db08dd7c4)
+
+***From the above graphs we can see that the IT Sector, Healthcare Sector and Aviation Sector have recorded the highest purchases.***
+
+###
+
+## PRODUCT CATEGORY-BASED ANALYSIS
+```vim
+---overview of all the columns
+df.columns
+```
+
+```vim
+---count of Product Categories
+ax = sns.countplot(x="Product_Category", data = df)
+sns.set(rc={"figure.figsize":(30,5)})
+for bars in ax.containers:
+    ax.bar_label(bars)
+```
+![count of product categories](https://github.com/user-attachments/assets/05fab156-d357-42ea-a265-6d4ef55f12d7)
+
+```vim
+---amount/sales of Product Categories
+sales_pc = df.groupby(["Product_Category"], as_index=False)["Amount"].sum().sort_values(by="Amount",ascending=False)
+sns.barplot(x="Product_Category", y="Amount", data = sales_pc)
+```
+![sales of product categories](https://github.com/user-attachments/assets/10d1c428-7adc-4a3a-aa7f-b553e4a7647a)
+
+***From the above graphs we can see that Clothes, food and electronic gadgets are bought more in their respective order however, the amount is spent more on food than on clothes.***
+###
+
+## PRODUCT_ID ANALYSIS
+```vim
+---overview of all the columns
+df.columns
+```
+
+```vim
+---top 10 products purchased
+sales_product = df.groupby(["Product_ID"], as_index=False) ["Amount"].sum().sort_values(by = "Amount", ascending= False).head(10)
+sns.set(rc = {"figure.figsize":(15,5)})
+ax = sns.barplot(x="Product_ID", y = "Amount", data = sales_product)
+for bars in ax.containers:
+    ax.bar_label(bars)
+```
+![top 10 product id](https://github.com/user-attachments/assets/25ea379c-0dc5-4a62-aeaf-6501121f0129)
+
+***Product_ID:P00265242 has the highest sales amounting to Rs. 5,40,136***
+
+###
+
+## TECHNOLOGY STACK
+- **Database**: Jupyter Notebook
+- **Tools**: Jupyter Notebook, Python, Pandas, Matplotlib, Seaborn
+
+
+
+
+
